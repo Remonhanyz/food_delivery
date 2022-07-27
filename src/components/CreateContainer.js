@@ -32,12 +32,119 @@ const CreateContainer = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [{foodItems}, dispatch] = useStateValue();
 
-	const uploadImage = () => {};
+	const uploadImage = (e) => {
+		setIsLoading(true);
+		const imageFile = e.target.files[0];
+		const storageRef = ref(storage, `images/${Date.now}-${imageFile.name}`);
+		const uploadTask = uploadBytesResumable(storageRef, imageFile);
 
-	const deleteImage = () => {};
+		uploadTask.on(
+			"state_changed",
+			(snapshot) => {
+				const uploadProgress =
+					(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+			},
+			(error) => {
+				console.log(error);
+				setFields(true);
+				setMsg("error while uploading");
+				setAlertStatus("danger");
+				setTimeout(() => {
+					setFields(false);
+					setIsLoading(false);
+				}, 4000);
+			},
+			() => {
+				getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+					setImageAsset(downloadURL);
+					setIsLoading(false);
+					setFields(true);
+					setMsg("Image uploaded successfully 😊");
+					setAlertStatus("success");
+					setTimeout(() => {
+						setFields(false);
+					}, 4000);
+				});
+			}
+		);
+	};
 
-	const saveDetails = () => {};
+	const deleteImage = () => {
+		setIsLoading(true);
+		const deleteRef = ref(storage, imageAsset);
+		deleteObject(deleteRef).then(() => {
+			setImageAsset(null);
+			setIsLoading(false);
+			setFields(true);
+			setMsg("Image deleted successfully 😊");
+			setAlertStatus("success");
+			setTimeout(() => {
+				setFields(false);
+			}, 4000);
+		});
+	};
 
+	const saveDetails = () => {
+		setIsLoading(true);
+		try {
+			if (!title || !calories || !imageAsset || !price || !category) {
+				setFields(true);
+				setMsg("Required fields can't be empty");
+				setAlertStatus("danger");
+				setTimeout(() => {
+					setFields(false);
+					setIsLoading(false);
+				}, 4000);
+			} else {
+				const data = {
+					id: `${Date.now()}`,
+					title: title,
+					imageURL: imageAsset,
+					category: category,
+					calories: calories,
+					qty: 1,
+					price: price
+				};
+				saveItem(data);
+				setIsLoading(false);
+				setFields(true);
+				setMsg("Data Uploaded successfully 😊");
+				setAlertStatus("success");
+				setTimeout(() => {
+					setFields(false);
+				}, 4000);
+				clearData();
+			}
+		} catch (error) {
+			console.log(error);
+			setFields(true);
+			setMsg("Error while uploading : Try AGain 🙇");
+			setAlertStatus("danger");
+			setTimeout(() => {
+				setFields(false);
+				setIsLoading(false);
+			}, 4000);
+		}
+
+		fetchData();
+	};
+
+	const clearData = () => {
+		setTitle("");
+		setImageAsset(null);
+		setCalories("");
+		setPrice("");
+		setCategory("Select Category");
+	};
+
+	const fetchData = async () => {
+		await getAllFoodItems().then((data) => {
+			dispatch({
+				type: actionType.SET_FOOD_ITEMS,
+				foodItems: data
+			});
+		});
+	};
 	return (
 		<>
 			<div className="w-full flex items-center justify-center min-h-screen">
@@ -160,9 +267,11 @@ const CreateContainer = () => {
 					<div className="flex items-center w-full">
 						<button
 							type="button"
-							className="ml-0 md:ml-auto w-full md:w-auto border-none outline-none px-12 py-2 bg-emeral-500 rounded-lg text-lg text-white font-semibod"
-							onclick={saveDetails}
-						></button>
+							className="ml-0 md:ml-auto w-full md:w-auto border-none outline-none px-12 py-2 bg-emerald-500 rounded-lg text-lg text-white font-semibod"
+							onClick={saveDetails}
+						>
+							Save
+						</button>
 					</div>
 				</div>
 			</div>
