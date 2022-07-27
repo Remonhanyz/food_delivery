@@ -1,100 +1,173 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, {useState} from "react";
+import {motion} from "framer-motion";
 import {
-  MdFastfood,
-  MdCloudUpload,
-  MdDelete,
-  MdFoodBank,
-  MdAttachMoney,
+	MdFastfood,
+	MdCloudUpload,
+	MdDelete,
+	MdFoodBank,
+	MdAttachMoney
 } from "react-icons/md";
-import { categories } from "../utils/data";
+import {categories} from "../utils/data";
 import Loader from "./Loader";
 import {
-  deleteObject,
-  getDownloadURL,
-  ref,
-  uploadBytesResumable,
+	deleteObject,
+	getDownloadURL,
+	ref,
+	uploadBytesResumable
 } from "firebase/storage";
-import { storage } from "../firebase.config";
-import { getAllFoodItems, saveItem } from "../utils/firebaseFunctions";
-import { actionType } from "../context/reducer";
-import { useStateValue } from "../context/StateProvider";
+import {storage} from "../firebase.config";
+import {getAllFoodItems, saveItem} from "../utils/firebaseFunctions";
+import {actionType} from "../context/reducer";
+import {useStateValue} from "../context/StateProvider";
 
 const CreateContainer = () => {
-  const [title, setTitle] = useState("");
-  const [calories, setCalories] = useState("");
-  const [price, setPrice] = useState("");
-  const [category, setCategory] = useState(null);
-  const [imageAsset, setImageAsset] = useState(null);
-  const [fields, setFields] = useState(false);
-  const [alertStatus, setAlertStatus] = useState("danger");
-  const [msg, setMsg] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [{ foodItems }, dispatch] = useStateValue();
+	const [title, setTitle] = useState("");
+	const [calories, setCalories] = useState("");
+	const [price, setPrice] = useState("");
+	const [category, setCategory] = useState(null);
+	const [imageAsset, setImageAsset] = useState(null);
+	const [fields, setFields] = useState(false);
+	const [alertStatus, setAlertStatus] = useState("danger");
+	const [msg, setMsg] = useState(null);
+	const [isLoading, setIsLoading] = useState(false);
+	const [{foodItems}, dispatch] = useStateValue();
 
-  const uploadImage = () => {
+	const uploadImage = () => {};
 
-  }
+	const deleteImage = () => {};
 
-  const deleteImage= () => {
+	const saveDetails = () => {};
 
-  }
+	return (
+		<>
+			<div className="w-full flex items-center justify-center min-h-screen">
+				<div className="w-[90%] md:w-[75%] border border-gray-200 rounded-lg p-4 flex flex-col items-center justify-center gap-4">
+					{fields && (
+						<motion.p
+							initial={{opacity: 0}}
+							animate={{opacity: 1}}
+							exit={{opacity: 0}}
+							className={`w-full p-2 text-center font-semibold rounded-lg text-lg ${
+								alertStatus === "danger"
+									? "bg-red-400 text-red-800"
+									: "bg-emeral-800 text-emerald-800"
+							}`}
+						>
+							{msg}
+						</motion.p>
+					)}
+					<div className="w-full py-2 border-b border-gray-300 flex items-center gap-2">
+						<MdFastfood className="text-xl text-gray-700" />
+						<input
+							type="text"
+							required
+							value={title}
+							placeholder="Give me a title..."
+							onChange={(e) => setTitle(e.target.value)}
+							className="w-full h-full text-lg font-semibold bg-transparent outline-none border-none placeholder:text-gray-400 text-textColor"
+						/>
+					</div>
+					<div className="w-full">
+						<select
+							onChange={(e) => setCategory(e.target.value)}
+							className="outline-none w-full bg-white text-base border-b-2 border-gray-200 p-2 rounded-md cirsor-pointer"
+						>
+							<option value="other" className="bg-white">
+								Select Category
+							</option>
+							{categories &&
+								categories.map((item) => (
+									<option
+										key={item.id}
+										value={item.urlParamName}
+										className="text-base border-0 outline-none capitalize bg-white text-headingColor"
+									>
+										{item.name}
+									</option>
+								))}
+						</select>
+					</div>
 
-  return (
-    <div className="w-full flex items-center justify-center min-h-screen">
-      <div className="w-[90%] md:w-[75%] border border-gray-200 rounded-lg p-4 flex flex-col items-center justify-center gap-4">
-        {fields && (
-          <motion.p initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 0}} className={`w-full p-2 text-center font-semibold rounded-lg text-lg ${alertStatus === 'danger'? 'bg-red-400 text-red-800': 'bg-emeral-800 text-emerald-800'}`}>
-            {msg}
-          </motion.p>
-        )}
-        <div className="w-full py-2 border-b border-gray-300 flex items-center gap-2">
-          <MdFastfood className="text-xl text-gray-700"/>
-          <input type="text" required value={title} placeholder="Give me a title..." onChange={(e) => setTitle(e.target.value)} className="w-full h-full text-lg font-semibold bg-transparent outline-none border-none placeholder:text-gray-400 text-textColor" />
-        </div>
-        <div className="w-full">
-          <select onChange={(e) => setCategory(e.target.value)} className="outline-none w-full bg-white text-base border-b-2 border-gray-200 p-2 rounded-md cirsor-pointer">
-            <option value="other" className="bg-white">Select Category</option>
-            {categories && categories.map((item) => (
-            <option key={item.id} value={item.urlParamName} className="text-base border-0 outline-none capitalize bg-white text-headingColor">{item.name}</option>
+					<div className="group flex justify-center items-center flex-col border-2 border-dotted border-gray-300 w-full h-225 md:h-420 cursor-pointer rounded-lg">
+						{isLoading ? (
+							<Loader />
+						) : (
+							<>
+								{!imageAsset ? (
+									<>
+										<label className="w-full h-full flex flex-col items-center justify-center cursor-pointer">
+											<div className="w-full h-full flex flex-col items-center justify-center gap-2">
+												<MdCloudUpload className="text-gray-500 text-3xl hover:text-gray-700" />
+												<p className="text-gray-500 hover:text-gray-700">
+													Click here to upload
+												</p>
+											</div>
+											<input
+												type="file"
+												name="uploadimage"
+												accept="image/*"
+												onChange={uploadImage}
+												className="w-0 h-0"
+											/>
+										</label>
+									</>
+								) : (
+									<>
+										<div className="relative h-full">
+											<img
+												src={imageAsset}
+												alt="uploaded"
+												className="w-full h-full object-cover"
+											/>
+											<button
+												type="button"
+												className="absolute bottom-3 right-3 p-3 rounded-full bg-red-500 text-xl cursor-pointer outline-none hover:shadow-md  duration-500 transition-all ease-in-out"
+												onClick={deleteImage}
+											>
+												<MdDelete className="text-white" />
+											</button>
+										</div>
+									</>
+								)}
+							</>
+						)}
+					</div>
 
-            ))}
-          </select>
-        </div>
-        
-        <div className="group flex justify-center items-center flex-col border-2 border-dotted border-gray-300 w-full h-225 md:h-420 cursor-pointer rounded-lg">
-          {isLoading? <Loader />: <div>
-            {!imageAsset? 
-              <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer">
-                <div className="gap-2 w-full h-full flex flex-col items-center justify-center cursor-pointer text-gray-500 hover:text-gray-700">
-                  <MdCloudUpload className=" text-3xl"/>
-                  <p className="text-3xl ">Click here to upload..</p>
-                </div>
-                <input type='file' name="uploadimage" accept="image/*" onChange={uploadImage} className="w-0 h-0" />
-              </label>: 
-              <div className="relative h-full">
-                <img src={imageAsset} alt="uploaded image" className="w-full h-full object-cover"/>
-                <button type="button" className="absolute bottom-3 right-3 p-3 rounded-full bg-red-500 text-xl cursor-pointer outline-none hover:shadow-md duration-500 ease-in-out" onClick={deleteImage}>
-                  <MdDelete className="text-white" />
-                </button>
-              <div/>}
-          <div/>}
-        <div className="w-full flex flex-col md:flex-row items-center gap-3">
-          <div className="w-full py-2 border-b border-gray-300 flex item-center gap-2">
-            <MdFoodBank className="text-gray-700 text-2xl"/>
-            <input value={calories} onChange={(e) => setCalories(e.target.value)} type="text" required placeholder="Calories" className="w-full h-full text-lg font-semibold bg-transparent outline-none border-none placeholder:text-gray-400 text-textColor"/>
-          </div>
-        </div>
-        <div className="w-full flex flex-col md:flex-row items-center gap-3">
-          <div className="w-full py-2 border-b border-gray-300 flex item-center gap-2">
-            <MdFoodBank className="text-gray-700 text-2xl"/>
-            <input value={price} onChange={(e) => setPrice(e.target.value)} type="text" required placeholder="Price" className="w-full h-full text-lg font-semibold bg-transparent outline-none border-none placeholder:text-gray-400 text-textColor"/>
-          </div>
-        </div>
+					<div className="w-full flex flex-col md:flex-row items-center gap-3">
+						<div className="w-full py-2 border-b border-gray-300 flex item-center gap-2">
+							<MdFoodBank className="text-gray-700 text-2xl" />
+							<input
+								value={calories}
+								onChange={(e) => setCalories(e.target.value)}
+								type="text"
+								required
+								placeholder="Calories"
+								className="w-full h-full text-lg font-semibold bg-transparent outline-none border-none placeholder:text-gray-400 text-textColor"
+							/>
+						</div>
+						<div className="w-full py-2 border-b border-gray-300 flex item-center gap-2">
+							<MdAttachMoney className="text-gray-700 text-2xl" />
+							<input
+								value={price}
+								onChange={(e) => setPrice(e.target.value)}
+								type="text"
+								required
+								placeholder="Price"
+								className="w-full h-full text-lg font-semibold bg-transparent outline-none border-none placeholder:text-gray-400 text-textColor"
+							/>
+						</div>
+					</div>
+					<div className="flex items-center w-full">
+						<button
+							type="button"
+							className="ml-0 md:ml-auto w-full md:w-auto border-none outline-none px-12 py-2 bg-emeral-500 rounded-lg text-lg text-white font-semibod"
+							onclick={saveDetails}
+						></button>
+					</div>
+				</div>
+			</div>
+		</>
+	);
+};
 
-        </div>
-    </div>
-  )
-}
-
-export default CreateContainer
+export default CreateContainer;
