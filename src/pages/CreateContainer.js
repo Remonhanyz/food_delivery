@@ -8,7 +8,7 @@ import {
 	MdAttachMoney
 } from "react-icons/md";
 import {categories} from "../utils/data";
-import Loader from "./Loader";
+import Loader from "../components/Loader";
 import {
 	deleteObject,
 	getDownloadURL,

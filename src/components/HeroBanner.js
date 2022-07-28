@@ -2,7 +2,7 @@ import React from "react";
 import Delivery from "../img/delivery.png";
 import HeroBg from "../img/heroBg.png";
 import { heroData } from "../utils/data";
-
+import Button from "./Button"
 const Home = () => {
 	return (
 		<section
@@ -34,12 +34,7 @@ const Home = () => {
 					architecto alias iure ab sapiente ex dolor cum libero vero minima
 					unde qui consequatur!
 				</p>
-				<button
-					className="bg-gradient-to-br from-orange-400 to-orange-500 w-full md:w-auto px-4 py-2 rounded-lg hover:shadow-lg transition-all ease-in-ease-out"
-					type="button"
-				>
-					Order Now
-				</button>
+				<Button text={'Order Now'}/>
 			</div>
 			<div className="py-2 grid-span-1 flex items-center relative">
 				<img
@@ -47,7 +42,7 @@ const Home = () => {
 					alt="hero-bg"
 					className="h-420 w-full lg:w-auto lg:h-650 ml-auto"
 				/>
-				<div className="w-full h-full absolute overflow-x-hidden top-0 left-0 flex items-center justify-center py-4 flex-wrap gap-4 lg:px-16">
+				<div className="w-full h-full absolute overflow-x-hidden overflow-y-hidden top-0 left-0 flex items-center justify-center py-4 flex-wrap gap-4 lg:px-16">
 					{heroData &&
 						heroData.map((data) => (
 							<div

@@ -8,39 +8,38 @@ import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 import { app } from '../firebase.config'
 import { useStateValue } from '../context/StateProvider'
 import { actionType } from '../context/reducer'
-// import useState from ''
 
-const Header = () => {
+const Header = ({isMenu, setIsMenu}) => {
   const [{ user, isAdmin }, dispatch] = useStateValue()
   const firebaseAuth = getAuth(app)
   const provider = new GoogleAuthProvider()
-  const [isMenu, setIsMenu] = useState(false)
+  const [isNavigationbar, setIsNavigationbar] = useState(false)
 
   const login = async () => {
     if (!user) {
       const {
         user: { refreshToken, providerData }
       } = await signInWithPopup(firebaseAuth, provider)
-      console.log((await providerData[0].email) == 'remonhany2000@gmail.com')
+      console.log((await providerData[0].email) === 'remonhany2000@gmail.com')
       dispatch({
         type: actionType.SET_USER,
         user: await providerData[0],
-        isAdmin: (await providerData[0].email) == 'remonhany2000@gmail.com'
+        isAdmin: (await providerData[0].email) === 'remonhany2000@gmail.com'
       })
       localStorage.setItem('user', JSON.stringify(await providerData[0]))
       localStorage.setItem(
         'isAdmin',
         JSON.stringify(
-          (await providerData[0].email) == 'remonhany2000@gmail.com'
+          (await providerData[0].email) === 'remonhany2000@gmail.com'
         )
       )
     } else {
-      setIsMenu(!isMenu)
+      setIsNavigationbar(!isNavigationbar)
     }
   }
 
   const logout = () => {
-    setIsMenu(false)
+    setIsNavigationbar(false)
     localStorage.clear()
     dispatch({
       type: actionType.SET_USER,
@@ -65,7 +64,10 @@ const Header = () => {
             className='flex items-center gap-8 ml-auto'
           >
             <li className='text-base text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer'>
-              Home
+                      <Link to={'/'}>
+                  Home
+                </Link>
+
             </li>
             <li className='text-base text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer'>
               Menu
@@ -78,7 +80,7 @@ const Header = () => {
             </li>
           </motion.ul>
           <div className='relative flex items-center justify-center'>
-            <MdShoppingBasket className='text-textColor test-2xl cursor-pointer' />
+            <MdShoppingBasket className='text-textColor test-2xl cursor-pointer' onClick={() => setIsMenu(true)}/>
             <div className='absolute -top-3 -right-2 w-4 h-4 rounded-full bg-cartNumBg flex items-center justify-center'>
               <p className='text-[0.65rem] text-white font-semibold'>2</p>
             </div>
@@ -91,7 +93,7 @@ const Header = () => {
               className='w-9 min-w-[2.25rem] h-9 min-h-[2.25rem] drop-shadow-md cursor-pointer rounded-full'
               onClick={login}
             />
-            {isMenu && (
+            {isNavigationbar && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.6 }}
                 exit={{ opacity: 0, scale: 0.6 }}
@@ -100,7 +102,10 @@ const Header = () => {
               >
                 {user && isAdmin === true && (
                   <Link to='/createitem'>
-                    <p className='px-4 py-2 flex items-center gap-3 cursor-pointer hover:bg-slate-200 transition-all duration-100 ease-in-out text-textColor text-base' onClick={() => setIsMenu(false)}>
+                    <p
+                      className='px-4 py-2 flex items-center gap-3 cursor-pointer hover:bg-slate-200 transition-all duration-100 ease-in-out text-textColor text-base'
+                      onClick={() => setIsNavigationbar(false)}
+                    >
                       New Item <MdAdd />{' '}
                     </p>
                   </Link>
@@ -120,7 +125,7 @@ const Header = () => {
       {/* mobile */}
       <div className='flex items-center justify-between md:hidden w-full h-full '>
         <div className='relative flex items-center justify-center'>
-          <MdShoppingBasket className='text-textColor test-2xl cursor-pointer' />
+          <MdShoppingBasket className='text-textColor test-2xl cursor-pointer' onClick={() => setIsMenu(true)}/>
           <div className='absolute -top-3 -right-2 w-4 h-4 rounded-full bg-cartNumBg flex items-center justify-center'>
             <p className='text-[0.65rem] text-white font-semibold'>2</p>
           </div>
@@ -138,7 +143,7 @@ const Header = () => {
             onClick={login}
           />
 
-          {isMenu && (
+          {isNavigationbar && (
             <motion.div
               initial={{ opacity: 0, scale: 0.6 }}
               exit={{ opacity: 0, scale: 0.6 }}
@@ -147,23 +152,35 @@ const Header = () => {
             >
               {user && isAdmin === true && (
                 <Link to='/createitem'>
-                  <p className='px-4 py-2 flex items-center gap-3 cursor-pointer hover:bg-slate-200 transition-all duration-100 ease-in-out text-textColor text-base' onClick={() => setIsMenu(false)}>
+                  <p
+                    className='px-4 py-2 flex items-center gap-3 cursor-pointer hover:bg-slate-200 transition-all duration-100 ease-in-out text-textColor text-base'
+                    onClick={() => setIsNavigationbar(false)}
+                  >
                     New Item <MdAdd />{' '}
                   </p>
                 </Link>
               )}
 
               <ul className='flex flex-col'>
-                <li className='text-base px-4 py-2 text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer hover:bg-slate-200' onClick={() => setIsMenu(false)}>
-                  Home
+                <li onClick={() => setIsNavigationbar(false)} className='text-base px-4 py-2 text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer hover:bg-slate-200'>
+                  <Link to={'/'}>Home</Link>
                 </li>
-                <li className='text-base px-4 py-2 text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer hover:bg-slate-200' onClick={() => setIsMenu(false)}>
+                <li
+                  className='text-base px-4 py-2 text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer hover:bg-slate-200'
+                  onClick={() => setIsNavigationbar(false)}
+                >
                   Menu
                 </li>
-                <li className='text-base px-4 py-2 text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer hover:bg-slate-200' onClick={() => setIsMenu(false)}>
+                <li
+                  className='text-base px-4 py-2 text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer hover:bg-slate-200'
+                  onClick={() => setIsNavigationbar(false)}
+                >
                   About Us
                 </li>
-                <li className='text-base px-4 py-2 text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer hover:bg-slate-200' onClick={() => setIsMenu(false)}>
+                <li
+                  className='text-base px-4 py-2 text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer hover:bg-slate-200'
+                  onClick={() => setIsNavigationbar(false)}
+                >
                   Service
                 </li>
               </ul>
