@@ -1,17 +1,25 @@
 export const fetchUser = () => {
-    console.log(JSON.parse(localStorage.getItem('user')))
-    const userInfo = 
-        localStorage.getItem('user') !== "undefined"
-            ? JSON.parse(localStorage.getItem('user'))
-            : localStorage.clear()
-    return userInfo
-}
+	const userInfo =
+		localStorage.getItem("user") !== "undefined"
+			? JSON.parse(localStorage.getItem("user"))
+			: localStorage.clear();
+	return userInfo;
+};
 
 export const fetchIsAdmin = () => {
-    console.log(JSON.parse(localStorage.getItem('isAdmin')))
-    const userInfo = 
-        localStorage.getItem('isAdmin') !== "undefined"
-            && JSON.parse(localStorage.getItem('isAdmin'))
+	const userInfo =
+		localStorage.getItem("isAdmin") !== "undefined" &&
+		JSON.parse(localStorage.getItem("isAdmin"));
 
-    return userInfo
-}
+	return userInfo;
+};
+
+export const fetchCartItems = () => {
+	const cartInfo =
+		localStorage.getItem("cartItems") !== "undefined"
+			? JSON.parse(localStorage.getItem("cartItems"))
+			: localStorage.clear();
+
+	console.log("localStorage: ", cartInfo ? cartInfo : []);
+	return cartInfo ? cartInfo : [];
+};

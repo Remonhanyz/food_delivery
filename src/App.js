@@ -1,6 +1,6 @@
 import React from "react";
 import {Header, Footer, CartContainer} from "./components";
-import {Home, CreateContainer, ProductDetails, OrderNow} from "./pages";
+import {Home, CreateContainer, ProductDetails, OrderNow, Success} from "./pages";
 import {Route, Routes} from "react-router-dom";
 import {AnimatePresence} from "framer-motion";
 import {useStateValue} from "./context/StateProvider";
@@ -35,6 +35,7 @@ const App = () => {
 						<Route path="/createItem" element={<CreateContainer />} />
 						<Route path="/product/:id" element={<ProductDetails />} />
 						<Route path="/ordernow" element={<OrderNow />} />
+						<Route path="/success" element={<Success />} />
 					</Routes>
 				</main>
 				<CartContainer isMenu={isMenu} setIsMenu={setIsMenu}/>

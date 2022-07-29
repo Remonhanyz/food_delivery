@@ -1,11 +1,13 @@
-import { fetchUser, fetchIsAdmin } from "../utils/fetchLocalStorageData";
+import { fetchUser, fetchIsAdmin, fetchCartItems } from "../utils/fetchLocalStorageData";
 
 const getUser = fetchUser()
 const admin = fetchIsAdmin()
+const cart = fetchCartItems()
 
 export const initialState = {
     user: getUser,
     products: [],
-    isAdmin: admin
+    isAdmin: admin,
+    cartItems: cart
 };
 

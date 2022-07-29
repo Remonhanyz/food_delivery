@@ -9,8 +9,8 @@ import { app } from '../firebase.config'
 import { useStateValue } from '../context/StateProvider'
 import { actionType } from '../context/reducer'
 
-const Header = ({isMenu, setIsMenu}) => {
-  const [{ user, isAdmin }, dispatch] = useStateValue()
+const Header = ({ isMenu, setIsMenu }) => {
+  const [{ user, isAdmin, cartItems }, dispatch] = useStateValue()
   const firebaseAuth = getAuth(app)
   const provider = new GoogleAuthProvider()
   const [isNavigationbar, setIsNavigationbar] = useState(false)
@@ -64,10 +64,7 @@ const Header = ({isMenu, setIsMenu}) => {
             className='flex items-center gap-8 ml-auto'
           >
             <li className='text-base text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer'>
-                      <Link to={'/'}>
-                  Home
-                </Link>
-
+              <Link to={'/'}>Home</Link>
             </li>
             <li className='text-base text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer'>
               Menu
@@ -80,10 +77,17 @@ const Header = ({isMenu, setIsMenu}) => {
             </li>
           </motion.ul>
           <div className='relative flex items-center justify-center'>
-            <MdShoppingBasket className='text-textColor test-2xl cursor-pointer' onClick={() => setIsMenu(true)}/>
-            <div className='absolute -top-3 -right-2 w-4 h-4 rounded-full bg-cartNumBg flex items-center justify-center'>
-              <p className='text-[0.65rem] text-white font-semibold'>2</p>
-            </div>
+            <MdShoppingBasket
+              className='text-textColor test-2xl cursor-pointer'
+              onClick={() => setIsMenu(true)}
+            />
+            {cartItems && cartItems?.length > 0 && (
+              <div className='absolute -top-3 -right-2 w-4 h-4 rounded-full bg-cartNumBg flex items-center justify-center'>
+                <p className='text-[0.65rem] text-white font-semibold'>
+                  {cartItems?.length}
+                </p>
+              </div>
+            )}
           </div>
           <div className='relative'>
             <motion.img
@@ -125,10 +129,17 @@ const Header = ({isMenu, setIsMenu}) => {
       {/* mobile */}
       <div className='flex items-center justify-between md:hidden w-full h-full '>
         <div className='relative flex items-center justify-center'>
-          <MdShoppingBasket className='text-textColor test-2xl cursor-pointer' onClick={() => setIsMenu(true)}/>
-          <div className='absolute -top-3 -right-2 w-4 h-4 rounded-full bg-cartNumBg flex items-center justify-center'>
-            <p className='text-[0.65rem] text-white font-semibold'>2</p>
-          </div>
+          <MdShoppingBasket
+            className='text-textColor test-2xl cursor-pointer'
+            onClick={() => setIsMenu(true)}
+          />
+          {cartItems?.length > 0 && (
+            <div className='absolute -top-3 -right-2 w-4 h-4 rounded-full bg-cartNumBg flex items-center justify-center'>
+              <p className='text-[0.65rem] text-white font-semibold'>
+                {cartItems?.length}
+              </p>
+            </div>
+          )}{' '}
         </div>
         <Link to={'/'} className='flex items-center gap-2'>
           <img src={Logo} alt='logo' className='w-8 object-cover' />
@@ -162,7 +173,10 @@ const Header = ({isMenu, setIsMenu}) => {
               )}
 
               <ul className='flex flex-col'>
-                <li onClick={() => setIsNavigationbar(false)} className='text-base px-4 py-2 text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer hover:bg-slate-200'>
+                <li
+                  onClick={() => setIsNavigationbar(false)}
+                  className='text-base px-4 py-2 text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer hover:bg-slate-200'
+                >
                   <Link to={'/'}>Home</Link>
                 </li>
                 <li

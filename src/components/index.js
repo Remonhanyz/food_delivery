@@ -6,3 +6,5 @@ export {default as ProductCardVertical} from "./ProductCardVertical";
 export {default as Products} from "./Products";
 export {default as SearchProducts} from "./SearchProducts";
 export {default as CartContainer} from "./CartContainer";
+export {default as CartItem} from "./CartItem";
+export {default as Button} from "./Button";

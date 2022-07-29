@@ -1,8 +1,45 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import {MdAddShoppingCart} from "react-icons/md";
+import {useStateValue} from "../context/StateProvider";
+import {motion} from "framer-motion";
+import {actionType} from "../context/reducer";
 
 const ProductCardVertical = ({product}) => {
+	const [{cartItems}, dispatch] = useStateValue();
+
+	const addToCart = async () => {
+		
+		const itemId = cartItems.findIndex((cartItem, index) => 
+			cartItem.id === product.id
+		);
+		if(itemId >= 0){
+			const cartItem = {
+				...cartItems[itemId],
+				qty: cartItems[itemId].qty + 1
+			};
+			
+			dispatch({
+				type: actionType.SET_CART_ITEMS,
+				cartItems: [...cartItems.slice(0, itemId), cartItem, ...cartItems.slice(itemId+1)]
+			});
+			localStorage.setItem(
+				"cartItems",
+				JSON.stringify([...cartItems.slice(0, itemId), cartItem, ...cartItems.slice(itemId+1)]))
+
+		} else {
+			product = {...product, qty: 1};
+			
+			dispatch({
+				type: actionType.SET_CART_ITEMS,
+				cartItems: [...cartItems, product]
+			});
+			localStorage.setItem(
+				"cartItems",
+				JSON.stringify([...cartItems, product]))
+		}
+	};
+
 	return (
 		<div className="my-2 px-1 w-full md:w-1/2 lg:my-4 lg:px-4 lg:w-1/3">
 			<div
@@ -10,11 +47,16 @@ const ProductCardVertical = ({product}) => {
 				key={product.id}
 			>
 				<div className="flex flex-row">
-					<button className=" z-40">
-						<MdAddShoppingCart className="text-textColor test-2xl cursor-pointer" />
-					</button>
+					<div onClick={(e) => addToCart()}>
+						<motion.div
+							whileTap={{scale: 0.75}}
+							className="z-40 p-2 bg-orange-100 rounded-full"
+						>
+							<MdAddShoppingCart className="text-textColor test-xl cursor-pointer" />
+						</motion.div>
+					</div>
 					<div className="bg-orange-100 px-4 rounded-full ml-auto z-40">
-						<p className=" text-[15px] xl:text-xs text-base text-orange-600 font-semibold -mt-8 -mr-auto my-1 xl:my-2">
+						<p className=" text-[15px] xl:text-xs text-base text-orange-600 font-semibold md:-mt-8 -mr-auto my-1 xl:my-2">
 							{product.category}
 						</p>
 					</div>
@@ -40,7 +82,6 @@ const ProductCardVertical = ({product}) => {
 						{product.price}
 					</p>
 					{/* </div> */}
-					
 				</Link>
 			</div>
 		</div>
