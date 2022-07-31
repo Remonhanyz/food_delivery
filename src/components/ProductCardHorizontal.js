@@ -66,14 +66,8 @@ const ProductCardHorizontal = ({product}) => {
 						$ {product?.price}
 					</div>
 				</div>
-				<div className=" flex flex-col items-center align-center h-full">
-					<div className="whitespace-nowrap bg-orange-100 px-4 rounded-full mt-auto ml-auto z-40">
-						<p className=" text-[15px] xl:text-xs text-base text-orange-600 font-semibold my-1 xl:my-2">
-							{product.category}
-						</p>
-					</div>
-				</div>
 			</Link>
+			<div className="flex flex-col h-full">
 			<div
 				onClick={(e) => addToCart()}
 				className="ml-auto mr-3 mb-auto"
@@ -84,6 +78,14 @@ const ProductCardHorizontal = ({product}) => {
 				>
 					<MdAddShoppingCart className="text-textColor test-xl cursor-pointer" />
 				</motion.div>
+			</div>
+				<div className="flex flex-col items-center align-center h-full">
+					<div className="whitespace-nowrap bg-orange-100 px-4 rounded-full mt-auto ml-auto z-40">
+						<p className=" text-[15px] xl:text-xs text-base text-orange-600 font-semibold my-1 xl:my-2">
+							{product.category}
+						</p>
+					</div>
+				</div>
 			</div>
 		</div>
 	);
