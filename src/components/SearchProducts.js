@@ -4,8 +4,10 @@ import axios from "axios";
 import Button from "./Button";
 import {useStateValue} from "../context/StateProvider";
 import {actionType} from "../context/reducer";
+import {FaThList} from 'react-icons/fa'
+import {IoMdListBox} from 'react-icons/io'
 
-const SearchExercises = () => {
+const SearchExercises = ({orientation,setOrientation}) => {
 	const [search, setSearch] = useState("");
 	const [{products}, dispatch] = useStateValue();
 
@@ -64,13 +66,26 @@ const SearchExercises = () => {
 					placeholder="Search ..."
 				/>
 				<div className="drop-shadow-lg">
-				<Button
-					text={"Search"}
-					height={"h-14"}
-					width={"w-auto"}
-					onClick={() => handleSearch()}
-				/>
+					<Button
+						text={"Search"}
+						height={"h-14"}
+						width={"w-auto"}
+						onClick={() => handleSearch()}
+					/>
 				</div>
+				<div className="flex justify-center items-center">
+					<FaThList 
+					className={`text-textColor text-[2.05rem] cursor-pointer bg-white p-2 rounded-xl shadow-md hover:shadow-lg transition-all ease-in-ease-out`}
+						onClick={()=>setOrientation('horizontal')}
+					/>
+				</div>
+								<div className="flex justify-center items-center">
+					<IoMdListBox 
+					className={`text-textColor text-[2.05rem] cursor-pointer bg-white p-2 rounded-xl shadow-md hover:shadow-lg transition-all ease-in-ease-out`}
+						onClick={()=>setOrientation('verticle')}
+					/>
+				</div>
+
 			</div>
 		</div>
 	);

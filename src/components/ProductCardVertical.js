@@ -7,7 +7,7 @@ import {actionType} from "../context/reducer";
 
 const ProductCardVertical = ({product}) => {
 	const [{cartItems}, dispatch] = useStateValue();
-
+	
 	const addToCart = async () => {
 		
 		const itemId = cartItems.findIndex((cartItem, index) => 
@@ -43,7 +43,7 @@ const ProductCardVertical = ({product}) => {
 	return (
 		<div className="my-2 px-1 w-full md:w-1/2 lg:my-4 lg:px-4 lg:w-1/3">
 			<div
-				className="drop-shadow-lg p-4 bg-white backdrop-blur-lg rounded-3xl lg:h-[28rem] "
+				className="drop-shadow-lg p-4 bg-white  rounded-3xl lg:h-[28rem] "
 				key={product.id}
 			>
 				<div className="flex flex-row">

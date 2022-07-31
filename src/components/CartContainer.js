@@ -13,16 +13,17 @@ const CartContainer = ({isMenu, setIsMenu}) => {
 	const [{products, cartItems}, dispatch] = useStateValue();
 	const [tot, setTot] = useState(0);
 	const [ flag, setFlag ] = useState(1);
-	
+	const [cartState, setCartState] = useState(false)
+
 	const handleOrderNow = () => {
 		setIsMenu(false);
 	};
 	useEffect(() => {
 		let totalPrice = cartItems.reduce(function (accumulator, item) {
-			return accumulator + item.qty * item.price;
+			return parseFloat(accumulator + item.qty * item.price);
 		}, 0);
 		setTot(totalPrice);
-	}, [tot]);
+	}, [tot, cartState]);
 
 	const clearCart = () => {
 		dispatch({
@@ -69,6 +70,8 @@ const CartContainer = ({isMenu, setIsMenu}) => {
 										product={product}
 										isDetails={false}
 										setTot={setTot}
+										cartState={cartState}
+										setCartState={setCartState}
 									/>
 								))}
 						</div>

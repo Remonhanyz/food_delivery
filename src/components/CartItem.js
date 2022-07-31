@@ -1,40 +1,41 @@
-import React, { useEffect, useState } from "react";
-import { BiMinus, BiPlus } from "react-icons/bi";
+import React, {useEffect, useState} from "react";
+import {BiMinus, BiPlus} from "react-icons/bi";
 import {TiDelete} from "react-icons/ti";
-import { motion } from "framer-motion";
-import { useStateValue } from "../context/StateProvider";
-import { actionType } from "../context/reducer";
+import {motion} from "framer-motion";
+import {useStateValue} from "../context/StateProvider";
+import {actionType} from "../context/reducer";
 
-const CartItem = ({ product, isDetails, setTot }) => {
-	
+const CartItem = ({product, isDetails, setTot, setCartState, cartState}) => {
 	const [{cartItems}, dispatch] = useStateValue();
 
 	const addToCart = async (itemId) => {
-				
-			const cartItem = {
-				...cartItems[itemId],
-				qty: cartItems[itemId].qty + 1
-			};
+		const cartItem = {
+			...cartItems[itemId],
+			qty: cartItems[itemId].qty + 1
+		};
 
-			dispatch({
-				type: actionType.SET_CART_ITEMS,
-				cartItems: [
-					...cartItems.slice(0, itemId),
-					cartItem,
-					...cartItems.slice(itemId + 1)
-				]
-			});
-			localStorage.setItem(
-				"cartItems",
-				JSON.stringify([
-					...cartItems.slice(0, itemId),
-					cartItem,
-					...cartItems.slice(itemId + 1)
-				])
-			);
-	}
+		dispatch({
+			type: actionType.SET_CART_ITEMS,
+			cartItems: [
+				...cartItems.slice(0, itemId),
+				cartItem,
+				...cartItems.slice(itemId + 1)
+			]
+		});
+		localStorage.setItem(
+			"cartItems",
+			JSON.stringify([
+				...cartItems.slice(0, itemId),
+				cartItem,
+				...cartItems.slice(itemId + 1)
+			])
+		);
+	};
 
 	const reduceFromCart = async (itemId) => {
+		if (cartItems[ itemId ].qty <= 1) {
+			removeFromCart(itemId);
+		} else {
 			const cartItem = {
 				...cartItems[itemId],
 				qty: cartItems[itemId].qty - 1
@@ -56,43 +57,45 @@ const CartItem = ({ product, isDetails, setTot }) => {
 					...cartItems.slice(itemId + 1)
 				])
 			);
-	}
+		}
+	};
 
-		const removeFromCart = async (itemId) => {
-			
-			dispatch({
-				type: actionType.SET_CART_ITEMS,
-				cartItems: [
-					...cartItems.slice(0, itemId),
-					...cartItems.slice(itemId + 1)
-				]
-			});
-			localStorage.setItem(
-				"cartItems",
-				JSON.stringify([
-					...cartItems.slice(0, itemId),
+	const removeFromCart = async (itemId) => {
+		dispatch({
+			type: actionType.SET_CART_ITEMS,
+			cartItems: [
+				...cartItems.slice(0, itemId),
+				...cartItems.slice(itemId + 1)
+			]
+		});
+		localStorage.setItem(
+			"cartItems",
+			JSON.stringify([
+				...cartItems.slice(0, itemId),
 					...cartItems.slice(itemId + 1)
 				])
 			);
-	}
-
+	};
 
 	const updateCart = async (state) => {
 		const itemId = cartItems.findIndex(
 			(cartItem, index) => cartItem.id === product.id
 		);
-if (state==='add')addToCart(itemId)
-if (state==='reduce')reduceFromCart(itemId)
-if (state==='remove')removeFromCart(itemId)
-
+		if (state === "add") addToCart(itemId);
+		if (state === "reduce") reduceFromCart(itemId);
+		if (state === "remove"){
+			setCartState(cartState == true ? false : true)
+			removeFromCart(itemId);
+		} 
 	};
 
-useEffect(()=>{
-	let totalPrice = cartItems.reduce(function (accumulator, item) {
+	useEffect(() => {
+		let totalPrice = cartItems.reduce((accumulator, item) => {
 			return accumulator + item.qty * item.price;
 		}, 0);
 		setTot(totalPrice);
-},[product.qty])
+
+	}, [cartItems, cartState]);
 
 	return (
 		<div className="w-full p-3 px-2 rounded-lg bg-white flex items-center justify-center gap-2">
@@ -124,7 +127,10 @@ useEffect(()=>{
 
 			{/* buttons section */}
 			<div className="group flex items-center gap-2 ml-auto cursor-pointer">
-				<motion.div whileTap={{scale: 0.75}} onClick={() => updateCart('reduce')}>
+				<motion.div
+					whileTap={{scale: 0.75}}
+					onClick={() => updateCart("reduce")}
+				>
 					<BiMinus className="rounded-full bg-orange-100 text-orange-600" />
 				</motion.div>
 
@@ -140,12 +146,12 @@ useEffect(()=>{
 				</motion.div>
 			</div>
 			{/* delete */}
-				<motion.div
-					whileTap={{scale: 0.75}}
-					onClick={() => updateCart("remove")}
-				>
-					<TiDelete className="rounded-full cursor-pointer text-xl text-orange-600 " />
-				</motion.div>
+			<motion.div
+				whileTap={{scale: 0.75}}
+				onClick={() => updateCart("remove")}
+			>
+				<TiDelete className="rounded-full cursor-pointer text-xl text-orange-600 " />
+			</motion.div>
 		</div>
 	);
 };
