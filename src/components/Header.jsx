@@ -67,15 +67,15 @@ const Header = () => {
             <li className='text-base text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer'>
               Home
             </li>
-            <li className='text-base text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer'>
-              Menu
-            </li>
-            <li className='text-base text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer'>
-              About Us
-            </li>
-            <li className='text-base text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer'>
-              Service
-            </li>
+//             <li className='text-base text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer'>
+//               Menu
+//             </li>
+//             <li className='text-base text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer'>
+//               About Us
+//             </li>
+//             <li className='text-base text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer'>
+//               Service
+//             </li>
           </motion.ul>
           <div className='relative flex items-center justify-center'>
             <MdShoppingBasket className='text-textColor test-2xl cursor-pointer' />
